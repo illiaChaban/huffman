@@ -41,6 +41,19 @@ rr.on("end", () => {
         }
     });
     sortedArray.reverse();
-    console.log(sortedArray);
+    createEncodingObj(sortedArray);
 
 });
+
+let createEncodingObj= (sortedArray) => {
+    let encodingObj = {};
+    sortedArray.forEach( (char, i) => {
+        encodingObj[char] = getBinaryCode(i);
+    })
+    return encodingObj;
+}
+
+let getBinaryCode = (index) => {
+    return '1'.repeat(index)+ '0';
+}
+
