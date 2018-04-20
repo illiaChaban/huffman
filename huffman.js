@@ -44,9 +44,11 @@ rr.on("end", () => {
     sortedArray.reverse();
     let encodingObj = createEncodingObj(sortedArray);
     let output = ""
-    originalString.forEach( (char) => {
+    originalString.split('').forEach( (char) => {
         output += encodingObj[char];
     });
+    console.log(decodeMessage(output, sortedArray));
+
 
 });
 
@@ -61,3 +63,23 @@ let createEncodingObj= (sortedArray) => {
 let getBinaryCode = (index) => {
     return '1'.repeat(index)+ '0';
 }
+
+
+let decodeMessage = (encodedMsg, encodingKey) => {
+    let sortedArray = getSortedArray(encodingKey)
+    let msg = '';
+    let count = 0;
+    for (let x of encodedMsg) {
+        if (x === '1') {
+            count++;
+        } else {
+            msg += sortedArray[count];
+            count = 0;
+        }
+    }
+    return msg;
+}
+
+// let getSortedArray = (encodingKey) => {
+    
+// }
