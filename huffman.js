@@ -5,17 +5,7 @@ rr.setEncoding('UTF-8');
 
 let freqTable = {};
 let originalString = "";
-// rr.on('readable', () => {
-//     while ( rr.readableLength > 0) {
-//         let chunk = rr.read(1);
-//         console.log(chunk)
-//         if (freqTable.chunk) {freqTable.chunk ++; }
-//         else freqTable.chunk = 1;
-//     }
 
-
-
-// });
 rr.on("data", (chunk) => {
     originalString += chunk;
     chunk.split("").forEach( char => {
@@ -26,30 +16,12 @@ rr.on("data", (chunk) => {
 
 })
 rr.on("end", () => {
-    let sortedArray = Object.keys(freqTable).slice();
-    sortedArray.sort( (a, b) => {
-        if (freqTable[a] > freqTable[b]) {
-            return 1;
-        }
-        else if (freqTable[a] < freqTable[b]) {
-            return -1;
-        }
-        else if (freqTable[a] === freqTable[b]) {
-            return 0;
-        }
-        else {
-            throw new Error("Sorting error");
-        }
-    });
-    sortedArray.reverse();
+    let sortedArray = getSortedArray(freqTable);
     let encodingObj = createEncodingObj(sortedArray);
-    let output = ""
-    originalString.split('').forEach( (char) => {
-        output += encodingObj[char];
-    });
-    console.log(decodeMessage(output, sortedArray));
-
-
+    let output = encodeMessage(originalString, encodingObj);
+    console.log(output);
+    console.log('###################')
+    console.log(decodeMessage(output, encodingObj));
 });
 
 let createEncodingObj= (sortedArray) => {
@@ -64,9 +36,16 @@ let getBinaryCode = (index) => {
     return '1'.repeat(index)+ '0';
 }
 
+let encodeMessage = (msg, encodingObj) => {
+    let encoded = '';
+    msg.split('').forEach( char => {
+        encoded += encodingObj[char];
+    })
+    return encoded;
+}
 
 let decodeMessage = (encodedMsg, encodingKey) => {
-    let sortedArray = getSortedArray(encodingKey)
+    let sortedArray = getSortedArray(encodingKey, true)
     let msg = '';
     let count = 0;
     for (let x of encodedMsg) {
@@ -80,6 +59,9 @@ let decodeMessage = (encodedMsg, encodingKey) => {
     return msg;
 }
 
-// let getSortedArray = (encodingKey) => {
-    
-// }
+let getSortedArray = (sortedObj, reverse = false) => {
+    let arr = Object.keys(sortedObj);
+    let sorted = arr.sort( (a,b) => sortedObj[b] - sortedObj[a]);
+    if (reverse) sorted.reverse();
+    return sorted;
+}
