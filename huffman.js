@@ -4,7 +4,7 @@ const rr = fs.createReadStream('text.txt');
 rr.setEncoding('UTF-8');
 
 let freqTable = {};
-
+let originalString = "";
 // rr.on('readable', () => {
 //     while ( rr.readableLength > 0) {
 //         let chunk = rr.read(1);
@@ -17,6 +17,7 @@ let freqTable = {};
 
 // });
 rr.on("data", (chunk) => {
+    originalString += chunk;
     chunk.split("").forEach( char => {
         if (freqTable[char]) {freqTable[char] ++; }
         else freqTable[char] = 1;
@@ -41,7 +42,11 @@ rr.on("end", () => {
         }
     });
     sortedArray.reverse();
-    createEncodingObj(sortedArray);
+    let encodingObj = createEncodingObj(sortedArray);
+    let output = ""
+    originalString.forEach( (char) => {
+        output += encodingObj[char];
+    });
 
 });
 
@@ -56,4 +61,3 @@ let createEncodingObj= (sortedArray) => {
 let getBinaryCode = (index) => {
     return '1'.repeat(index)+ '0';
 }
-
