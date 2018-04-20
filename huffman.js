@@ -16,15 +16,31 @@ let freqTable = {};
 
 
 // });
-rr.on('data', (chunk) => {
-    chunk.split('').forEach( char => {
+rr.on("data", (chunk) => {
+    chunk.split("").forEach( char => {
         if (freqTable[char]) {freqTable[char] ++; }
         else freqTable[char] = 1;
     })
-    
+
 
 })
-rr.on('end', () => {
-  console.log('end');
-  console.log(freqTable)
+rr.on("end", () => {
+    let sortedArray = Object.keys(freqTable).slice();
+    sortedArray.sort( (a, b) => {
+        if (freqTable[a] > freqTable[b]) {
+            return 1;
+        }
+        else if (freqTable[a] < freqTable[b]) {
+            return -1;
+        }
+        else if (freqTable[a] === freqTable[b]) {
+            return 0;
+        }
+        else {
+            throw new Error("Sorting error");
+        }
+    });
+    sortedArray.reverse();
+    console.log(sortedArray);
+
 });
